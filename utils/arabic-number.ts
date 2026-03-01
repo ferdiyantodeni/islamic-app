@@ -1,0 +1,1 @@
+export const toArabicNumber = (num: number) => num.toString().replace(/[0-9]/g, (d) => "٠١٢٣٤٥٦٧٨٩"[+d]);
