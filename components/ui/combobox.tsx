@@ -17,12 +17,13 @@ interface ComboboxProps {
     label: string;
     value: string;
     options: { value: string, label: string }[];
+    disabled?: boolean;
     onChange: (value: string) => void;
     icon: React.ReactNode;
     searchable?: boolean;
 };
 
-export default function Combobox({ label, value, options, onChange, icon, searchable = false }: ComboboxProps) {
+export default function Combobox({ label, value, options, disabled, onChange, icon, searchable = false }: ComboboxProps) {
     const [open, setOpen] = useState<boolean>(false);
     const [search, setSearch] = useState<string>("");
     const ref = useRef<HTMLDivElement>(null);
@@ -45,6 +46,7 @@ export default function Combobox({ label, value, options, onChange, icon, search
         <div ref={ref} className="relative">
             <button
                 onClick={() => setOpen(v => !v)}
+                disabled={disabled}
                 className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs sm:text-sm text-slate-700 hover:border-emerald-400 hover:bg-emerald-50 transition-all shadow-sm min-w-40 justify-between"
             >
                 <span className="flex items-center gap-2 truncate">
