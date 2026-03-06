@@ -1,6 +1,11 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import Combobox from "../ui/combobox"
+import useFetchProvince from "@/hooks/useFetchProvince"
+import useFetchCity from "@/hooks/useFetchCity"
+import { useQuery } from "@tanstack/react-query"
+import axios from "axios"
 
 interface PrayerTime {
     name: string
@@ -8,92 +13,270 @@ interface PrayerTime {
     icon: string
 }
 
+interface ScheduleDataType {
+    tanggal: number
+    tanggal_lengkap: string
+    hari: string
+    imsak: string
+    subuh: string
+    terbit: string
+    dhuha: string
+    dzuhur: string
+    ashar: string
+    maghrib: string
+    isya: string
+}
+
 export default function PrayerTimePage() {
     const [prayerTimes, setPrayerTimes] = useState<PrayerTime[]>([
-        { name: "Subuh", time: "04:45", icon: "🌙" },
-        { name: "Dzuhur", time: "12:15", icon: "☀️" },
-        { name: "Ashar", time: "15:30", icon: "🌤️" },
-        { name: "Maghrib", time: "18:00", icon: "🌅" },
-        { name: "Isya", time: "19:30", icon: "🌙" }
+        { name: "Subuh", time: "--:--", icon: "🌙" },
+        { name: "Dzuhur", time: "--:--", icon: "☀️" },
+        { name: "Ashar", time: "--:--", icon: "🌤️" },
+        { name: "Maghrib", time: "--:--", icon: "🌅" },
+        { name: "Isya", time: "--:--", icon: "🌙" }
     ])
 
-    const [nextPrayer, setNextPrayer] = useState<string>("Dzuhur")
-    const [timeRemaining, setTimeRemaining] = useState<string>("2h 30m")
+    const [nextPrayer, setNextPrayer] = useState<string>("-")
+    const [nextPrayerIcon, setNextPrayerIcon] = useState<string>("🕌")
+    const [timeRemaining, setTimeRemaining] = useState<string>("--:--")
+    const [selectedProvince, setSelectedProvince] = useState<string>("");
+    const [selectedCity, setSelectedCity] = useState<string>("");
+    const { data: provincesData, isLoading: isProvincesLoading } = useFetchProvince();
+    const { data: citiesData, isPending: isCitiesLoading } = useFetchCity({ selectedProvince });
+    const date = new Date();
+    const formattedMonth = date.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+    const formattedToday = date.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+    const { data: scheduleData, isPending: isScheduleLoading } = useQuery({
+        queryKey: ["get-schedule", selectedProvince, selectedCity],
+        queryFn: async () => {
+            const response = await axios.post("https://equran.id/api/v2/shalat", {
+                provinsi: selectedProvince,
+                kabkota: selectedCity,
+            });
+            return response?.data?.data?.jadwal;
+        },
+        enabled: !!selectedProvince && !!selectedCity,
+    });
 
     useEffect(() => {
-        const timer = setInterval(() => {
-            const now = new Date()
-            const hours = now.getHours()
-            const minutes = now.getMinutes()
-            const currentTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
+        if (scheduleData && scheduleData.length > 0) {
+            const today = new Date();
+            const todayDate = today.getDate();
 
-            const times = ["04:45", "12:15", "15:30", "18:00", "19:30"]
-            const labels = ["Subuh", "Dzuhur", "Ashar", "Maghrib", "Isya"]
+            const todaySchedule = scheduleData.find((s: ScheduleDataType) => s.tanggal === todayDate) ?? scheduleData[0];
 
-            let nextPrayerIndex = 0
-            for (let i = 0; i < times.length; i++) {
-                if (currentTime < times[i]) {
-                    nextPrayerIndex = i
-                    break
+            const prayerData: PrayerTime[] = [
+                { name: "Subuh", time: todaySchedule.subuh, icon: "🌙" },
+                { name: "Dzuhur", time: todaySchedule.dzuhur, icon: "☀️" },
+                { name: "Ashar", time: todaySchedule.ashar, icon: "🌤️" },
+                { name: "Maghrib", time: todaySchedule.maghrib, icon: "🌅" },
+                { name: "Isya", time: todaySchedule.isya, icon: "🌙" }
+            ];
+            setPrayerTimes(prayerData);
+
+            const prayerLabels = ["Subuh", "Dzuhur", "Ashar", "Maghrib", "Isya"];
+            const prayerIcons = ["🌙", "☀️", "🌤️", "🌅", "🌙"];
+            const prayerTimesFromApi = [
+                todaySchedule.subuh,
+                todaySchedule.dzuhur,
+                todaySchedule.ashar,
+                todaySchedule.maghrib,
+                todaySchedule.isya,
+            ];
+
+            const updateNextPrayer = () => {
+                const now = new Date();
+                const hours = now.getHours();
+                const minutes = now.getMinutes();
+                const currentTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+
+                let nextPrayerIndex = -1;
+                for (let i = 0; i < prayerTimesFromApi.length; i++) {
+                    if (currentTime < prayerTimesFromApi[i]) {
+                        nextPrayerIndex = i;
+                        break;
+                    }
                 }
-                nextPrayerIndex = 0
-            }
 
-            setNextPrayer(labels[nextPrayerIndex])
-        }, 1000)
+                if (nextPrayerIndex === -1) {
+                    nextPrayerIndex = 0;
+                }
 
-        return () => clearInterval(timer)
-    }, [])
+                setNextPrayer(prayerLabels[nextPrayerIndex]);
+                setNextPrayerIcon(prayerIcons[nextPrayerIndex]);
+
+                const nextPrayerTime = prayerTimesFromApi[nextPrayerIndex];
+                const [nextHours, nextMinutes] = nextPrayerTime.split(":").map(Number);
+                const nextDate = new Date();
+                nextDate.setHours(nextHours, nextMinutes, 0, 0);
+
+                if (nextDate <= now) {
+                    nextDate.setDate(nextDate.getDate() + 1);
+                }
+
+                const diff = nextDate.getTime() - now.getTime();
+                const hrs = Math.floor(diff / (1000 * 60 * 60));
+                const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const secs = Math.floor((diff % (1000 * 60)) / 1000);
+                setTimeRemaining(`${hrs}j ${mins}m ${secs}d`);
+            };
+
+            updateNextPrayer();
+            const timer = setInterval(updateNextPrayer, 1000);
+
+            return () => clearInterval(timer);
+        }
+    }, [scheduleData]);
+
+    const handleProvinceChange = (value: string) => {
+        setSelectedProvince(value);
+        setSelectedCity("");
+    };
 
     return (
-        <div className="px-14 py-7 flex-1 overflow-auto">
-            <div>
-                <h1 className="text-2xl font-bold">Prayer Time</h1>
-                <p className="text-sm text-slate-400">View prayer times for today</p>
+        <div className="px-7 sm:px-14 py-5 sm:py-7 flex-1 overflow-auto">
+            <div className="mb-8">
+                <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Jadwal Shalat</h1>
+                <p className="text-xs sm:text-sm text-slate-500">Pantau waktu shalat Anda dengan akurat</p>
             </div>
 
-            <div className="py-6">
-                <div className="bg-linear-to-br from-emerald-500 to-emerald-600 rounded-xl p-8 text-white shadow-lg">
-                    <p className="text-sm font-medium opacity-90 mb-2">Next Prayer</p>
-                    <h2 className="text-4xl font-bold mb-2">{nextPrayer}</h2>
-                    <p className="text-emerald-100 text-lg">In {timeRemaining}</p>
+            <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:px-6 sm:pt-4 sm:pb-6 mb-8 transition-all hover:shadow-sm">
+                <h2 className="text-sm sm:text-lg font-semibold text-slate-900">Pilih Lokasi</h2>
+                <p className="text-sm text-slate-500 mb-4">Pilih provinsi dan kabupaten/kota untuk melihat jadwal shalat</p>
+                <div className="flex flex-col sm:flex-row gap-4">
+                    <Combobox
+                        label="Provinsi"
+                        value={selectedProvince}
+                        options={provincesData || []}
+                        disabled={isProvincesLoading}
+                        icon={
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-500"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /><circle cx="12" cy="10" r="3" /></svg>
+                        }
+                        onChange={(val) => handleProvinceChange(val)}
+                    />
+                    <Combobox
+                        label="Kab/Kota"
+                        value={selectedCity}
+                        options={citiesData || []}
+                        disabled={!selectedProvince || isCitiesLoading}
+                        icon={
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-500"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
+                        }
+                        onChange={(val) => setSelectedCity(val)}
+                    />
                 </div>
             </div>
 
-            <div className="py-4">
-                <h3 className="text-lg font-semibold text-slate-800 mb-4">Today&apos;s Prayer Times</h3>
-                <div className="space-y-3">
-                    {prayerTimes.map((prayer, index) => (
-                        <div
-                            key={index}
-                            className="flex items-center justify-between p-4 bg-white rounded-lg border border-slate-200 hover:shadow-md transition-all duration-300 hover:border-emerald-300"
-                        >
-                            <div className="flex items-center gap-4">
-                                <span className="text-2xl">{prayer.icon}</span>
-                                <div>
-                                    <h4 className="font-semibold text-slate-800">{prayer.name}</h4>
-                                    <p className="text-sm text-slate-500">Prayer time</p>
-                                </div>
-                            </div>
-                            <div className="text-right">
-                                <p className="text-lg font-bold text-emerald-600">{prayer.time}</p>
-                                <p className="text-xs text-slate-400">Local time</p>
+            <div className="mb-8">
+                <div className="flex items-center gap-3 mb-5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-600"><path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M3 10h18" /></svg>
+                    <h3 className="text-lg sm:text-xl font-bold text-slate-900">Jadwal Hari Ini</h3>
+                    <span className="bg-emerald-200 py-1 px-3 rounded-full text-[0.7rem] font-semibold text-emerald-600">{formattedToday}</span>
+                </div>
+                {!selectedCity ? (
+                    <div className="bg-linear-to-br from-emerald-500 via-emerald-600 to-emerald-700 rounded-2xl p-5 sm:p-8 text-white shadow-lg border border-emerald-400/20">
+                        <p className="text-sm font-medium opacity-90">Pilih lokasi terlebih dahulu</p>
+                    </div>
+                ) : isScheduleLoading ? (
+                    <div className="bg-linear-to-br from-emerald-500 via-emerald-600 to-emerald-700 rounded-2xl p-5 sm:p-8 text-white shadow-lg border border-emerald-400/20 flex items-center justify-center gap-3">
+                        <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-emerald-200"></div>
+                        <p className="text-sm font-medium">Memuat data...</p>
+                    </div>
+                ) : (
+                    <div className="flex items-center justify-between bg-linear-to-br from-emerald-500 via-emerald-600 to-emerald-700 rounded-2xl p-5 sm:px-8 sm:py-6 text-white shadow-lg border border-emerald-400/20">
+                        <div>
+                            <p className="text-sm font-medium opacity-90 mb-2">Shalat Berikutnya</p>
+                            <h2 className="text-xl sm:text-2xl font-bold mb-3">{nextPrayerIcon} {nextPrayer}</h2>
+                        </div>
+                        <div>
+                            <p className="text-sm font-medium opacity-90 mb-2">Waktu tersisa</p>
+                            <p className="text-xl sm:text-2xl font-semibold text-emerald-100 mb-2">{timeRemaining}</p>
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+                {prayerTimes.map((prayer, index) => (
+                    <div key={index} className={`flex flex-col items-center justify-center rounded-xl p-6 border border-emerald-200 hover:shadow-md transition-all duration-300 hover:border-emerald-300 group ${prayer.name === nextPrayer ? "bg-emerald-50 border-2 border-emerald-200 shadow-[0_0_3px_#34d399]" : "bg-white"}`}>
+                        <div className="text-3xl mb-4 group-hover:scale-110 transition-transform">{prayer.icon}</div>
+                        <h4 className="font-semibold text-slate-900 mb-1">{prayer.name}</h4>
+                        <p className="text-xs text-slate-500 mb-2">Waktu shalat</p>
+                        <p className="text-2xl font-bold text-emerald-600">{prayer.time}</p>
+                    </div>
+                ))}
+            </div>
+
+            {selectedCity && (
+                <div className="mb-8">
+                    <div className="mb-6">
+                        <h2 className="text-lg sm:text-xl font-bold text-slate-900">Jadwal Shalat {formattedMonth}</h2>
+                        <p className="text-sm text-slate-600 mt-1">{selectedCity}, {selectedProvince}</p>
+                    </div>
+
+                    {isScheduleLoading ? (
+                        <div className="flex items-center justify-center py-16 bg-white rounded-2xl border border-slate-200">
+                            <div className="flex flex-col items-center gap-4">
+                                <div className="animate-spin rounded-full h-12 w-12 border-4 border-slate-200 border-t-emerald-500"></div>
+                                <p className="text-slate-600">Memuat jadwal shalat...</p>
                             </div>
                         </div>
-                    ))}
-                </div>
-            </div>
-
-            <div className="py-6">
-                <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
-                    <div className="flex items-center gap-2 mb-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-500"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
-                        <h4 className="font-semibold text-slate-700">Location</h4>
+                    ) : scheduleData && scheduleData.length > 0 ? (
+                        <div className="bg-white rounded-lg shadow-xs border border-emerald-200 overflow-hidden transition-all hover:shadow-sm">
+                            <div className="overflow-x-auto">
+                                <table className="w-full">
+                                    <thead>
+                                        <tr className="bg-emerald-50 border-b border-slate-200 text-emerald-500 text-center text-sm font-semibold whitespace-nowrap">
+                                            <th className="px-4 py-4">Tanggal</th>
+                                            <th className="px-4 py-4 text-left text-sm font-semibold whitespace-nowrap">Hari</th>
+                                            <th className="px-4 py-4">Subuh</th>
+                                            <th className="px-4 py-4">Terbit</th>
+                                            <th className="px-4 py-4">Dhuha</th>
+                                            <th className="px-4 py-4">Dzuhur</th>
+                                            <th className="px-4 py-4">Ashar</th>
+                                            <th className="px-4 py-4">Maghrib</th>
+                                            <th className="px-4 py-4">Isya</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-slate-200">
+                                        {scheduleData.map((schedule: ScheduleDataType, index: number) => (
+                                            <tr key={index} className="hover:bg-emerald-50/50 transition-colors duration-150">
+                                                <td className="px-4 py-4 text-center text-sm font-semibold text-emerald-600">{schedule.tanggal}</td>
+                                                <td className="px-4 py-4 text-sm font-semibold text-emerald-500">{schedule.hari}</td>
+                                                <td className="px-4 py-4 text-center text-sm text-slate-700">{schedule.subuh}</td>
+                                                <td className="px-4 py-4 text-center text-sm text-slate-700">{schedule.terbit}</td>
+                                                <td className="px-4 py-4 text-center text-sm text-slate-700">{schedule.dhuha}</td>
+                                                <td className="px-4 py-4 text-center text-sm text-slate-700">{schedule.dzuhur}</td>
+                                                <td className="px-4 py-4 text-center text-sm text-slate-700">{schedule.ashar}</td>
+                                                <td className="px-4 py-4 text-center text-sm text-slate-700">{schedule.maghrib}</td>
+                                                <td className="px-4 py-4 text-center text-sm text-slate-700">{schedule.isya}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="flex items-center justify-center py-16 bg-white rounded-2xl border border-slate-200">
+                            <div className="text-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-slate-300 mx-auto mb-3"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
+                                <p className="text-slate-600 font-medium">Jadwal tidak tersedia</p>
+                                <p className="text-slate-500 text-sm mt-1">Pilih provinsi dan kota untuk melihat jadwal shalat</p>
+                            </div>
+                        </div>
+                    )}
+                    <div className="bg-linear-to-br from-blue-50 to-blue-50/50 rounded-xl p-6 border border-blue-200 mt-5">
+                        <div className="flex items-center gap-5">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-600 mt-1 shrink-0"><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" /></svg>
+                            <div>
+                                <h4 className="text-sm font-semibold text-blue-900 mb-1">Informasi Lokasi</h4>
+                                <p className="text-xs text-blue-800">Waktu shalat ditampilkan berdasarkan lokasi yang Anda pilih. Pastikan lokasi Anda sudah sesuai untuk mendapatkan jadwal yang akurat.</p>
+                            </div>
+                        </div>
                     </div>
-                    <p className="text-slate-600 text-sm">Jakarta, Indonesia</p>
-                    <p className="text-slate-500 text-xs mt-1">Update your location in settings</p>
                 </div>
-            </div>
+            )}
         </div>
     )
 }

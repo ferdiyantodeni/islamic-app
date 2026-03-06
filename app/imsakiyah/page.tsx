@@ -2,6 +2,8 @@
 
 import Sidebar from "@/components/sidebar";
 import Combobox from "@/components/ui/combobox";
+import useFetchCity from "@/hooks/useFetchCity";
+import useFetchProvince from "@/hooks/useFetchProvince";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
@@ -21,33 +23,8 @@ interface ScheduleDataType {
 export default function ImsakiyahPage() {
     const [selectedProvince, setSelectedProvince] = useState<string>("");
     const [selectedCity, setSelectedCity] = useState<string>("");
-
-    const { data: provincesData, isLoading: isProvincesLoading } = useQuery({
-        queryKey: ["get-provinces"],
-        queryFn: async () => {
-            const response = await axios.get("https://equran.id/api/v2/imsakiyah/provinsi");
-            return response?.data?.data?.map((prov: string, index: number) => ({
-                id: index,
-                value: prov,
-                label: prov,
-            }));
-        },
-    });
-
-    const { data: citiesData, isPending: isCitiesLoading } = useQuery({
-        queryKey: ["get-cities", selectedProvince],
-        queryFn: async () => {
-            const response = await axios.post("https://equran.id/api/v2/imsakiyah/kabkota", {
-                provinsi: selectedProvince,
-            });
-            return response?.data?.data?.map((city: string, index: number) => ({
-                id: index,
-                value: city,
-                label: city,
-            }));
-        },
-        enabled: !!selectedProvince,
-    });
+    const { data: provincesData, isLoading: isProvincesLoading } = useFetchProvince();
+    const { data: citiesData, isPending: isCitiesLoading } = useFetchCity({ selectedProvince });
 
     const { data: scheduleData, isPending: isScheduleLoading } = useQuery({
         queryKey: ["get-schedule", selectedProvince, selectedCity],
