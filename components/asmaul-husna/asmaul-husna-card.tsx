@@ -7,7 +7,7 @@ interface AsmaulHusnaCardProps {
 
 export default function AsmaulHusnaCard({ latin, arabic, id, eng }: AsmaulHusnaCardProps) {
     return (
-        <div className="flex flex-col items-center justify-center rounded-xl px-6 py-6 border border-emerald-200 hover:shadow-md hover:border-emerald-300 group transition-all duration-300">
+        <div className="flex flex-col items-center justify-center rounded-xl px-5 py-9 border border-emerald-200 hover:shadow-md hover:border-emerald-300 group transition-all duration-300">
             <div className="text-center mb-3">
                 <p className="text-3xl font-bold text-emerald-500">{arabic}</p>
             </div>
