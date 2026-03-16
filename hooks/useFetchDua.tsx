@@ -7,6 +7,7 @@ export default function useFetchDua() {
         queryFn: async () => {
             const response = await axios.get("https://equran.id/api/doa");
             return response?.data?.data;
-        }
+        },
+        staleTime: Infinity
     });
 }

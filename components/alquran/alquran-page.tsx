@@ -1,11 +1,10 @@
 "use client"
 
-import { useQuery } from "@tanstack/react-query";
 import Search from "../ui/search";
 import Link from "next/link";
 import { toArabicNumber } from "@/utils/arabic-number";
 import { useState, useMemo } from "react";
-import axiosInstance from "@/lib/axios";
+import useFetchSurah from "@/hooks/useFetchSurah";
 
 type SurahItemType = {
     number: number
@@ -17,16 +16,8 @@ type SurahItemType = {
 }
 
 export default function AlquranPage() {
-    const [searchTerm, setSearchTerm] = useState("");
-
-    const { data: surahList, isLoading } = useQuery({
-        queryKey: ["surah-list"],
-        queryFn: async () => {
-            const response = await axiosInstance.get("/surah");
-            return response?.data?.data
-        },
-        staleTime: Infinity
-    });
+    const [searchTerm, setSearchTerm] = useState<string>("");
+    const { data: surahList, isLoading } = useFetchSurah();
 
     const filteredSurah = useMemo(() => {
         if (!surahList) return [];

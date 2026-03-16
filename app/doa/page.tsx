@@ -26,7 +26,6 @@ export default function DoaPage() {
         const matchTag = !selectedTag || doa.tag?.includes(selectedTag);
         return matchGroup && matchTag;
     });
-    console.log("doa", doaList);
 
     return (
         <div className="flex w-full min-h-screen">
