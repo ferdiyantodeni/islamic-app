@@ -55,7 +55,7 @@ export default function TasbihPage() {
             <Sidebar />
             <div className="pt-20 pb-5 px-7 lg:px-10 sm:py-6 flex-1 overflow-auto">
                 <div className="mb-5 sm:mb-8">
-                    <h1 className="text-lg sm:text-2xl font-semibold">Tasbih Digital</h1>
+                    <h1 className="text-lg sm:text-2xl font-semibold text-teal-400">Tasbih Digital</h1>
                     <p className="text-xs sm:text-sm text-slate-500">Hitung dzikir dengan mudah dan khusyuk</p>
                 </div>
 

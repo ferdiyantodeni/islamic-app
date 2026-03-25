@@ -31,7 +31,7 @@ export default function AlquranPage() {
     return (
         <div className="pt-20 pb-5 px-7 lg:px-10 sm:py-6 flex-1 overflow-auto">
             <div>
-                <h1 className="text-lg sm:text-2xl font-semibold">Al-Qur&apos;an</h1>
+                <h1 className="text-lg sm:text-2xl font-semibold text-teal-400">Al-Qur&apos;an</h1>
                 <p className="text-xs sm:text-sm text-slate-400">Pilih dan baca surat yang ingin Anda cari di sini.</p>
             </div>
             <div className="py-5 space-y-3">
@@ -58,7 +58,7 @@ export default function AlquranPage() {
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 my-2 sm:my-4">
                             {filteredSurah?.map((surah: SurahItemType, index: number) => (
-                                <Link href={`/ayah/${surah?.number}`} key={index} className="flex items-center justify-between p-5 sm:p-6 bg-white rounded-lg border border-slate-200 hover:shadow-md transition-all duration-300 hover:border-teal-300">
+                                <Link href={`/ayah/${surah?.number}`} key={index} className="flex items-center justify-between p-5 sm:p-6 bg-white rounded-lg border border-teal-100 hover:shadow-md transition-all duration-300 hover:border-teal-300">
                                     <div className="flex items-center gap-4">
                                         <h1 className="arabic flex items-center gap-1 text-2xl">
                                             <span className="ayah-number text-teal-400 text-4xl">

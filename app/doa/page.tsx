@@ -32,7 +32,7 @@ export default function DoaPage() {
             <Sidebar />
             <div className="pt-20 pb-10 px-7 lg:px-10 sm:py-6 flex-1 overflow-auto">
                 <div className="mb-5 sm:mb-8">
-                    <h1 className="text-lg sm:text-2xl font-semibold tracking-tight">Doa Harian</h1>
+                    <h1 className="text-lg sm:text-2xl font-semibold tracking-tight text-teal-400">Doa Harian</h1>
                     <p className="text-sm text-slate-400 mt-1">Temukan doa yang Anda butuhkan.</p>
                 </div>
 

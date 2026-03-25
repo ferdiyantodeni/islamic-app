@@ -8,7 +8,7 @@ export default function AsmaulHusnaPage() {
             <Sidebar />
             <div className="pt-20 pb-5 px-7 lg:px-10 sm:py-6 flex-1 overflow-auto">
                 <div className="mb-8">
-                    <h1 className="text-lg sm:text-2xl font-semibold">Asmaul Husna</h1>
+                    <h1 className="text-lg sm:text-2xl font-semibold text-teal-400">Asmaul Husna</h1>
                     <p className="text-xs sm:text-sm text-slate-500">Daftar 99 nama Allah yang paling mulia</p>
                 </div>
 

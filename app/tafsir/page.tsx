@@ -34,7 +34,7 @@ export default function TafsirPage() {
             <Sidebar />
             <div className="pt-20 pb-10 px-7 lg:px-10 sm:py-6 flex-1 overflow-auto">
                 <div className="mb-5 sm:mb-8">
-                    <h1 className="text-lg sm:text-2xl font-semibold tracking-tight">Tafsir</h1>
+                    <h1 className="text-lg sm:text-2xl font-semibold tracking-tight text-teal-400">Tafsir</h1>
                     <p className="text-sm text-slate-400 mt-1">Menjelaskan ayat-ayat Al-Qur&apos;an dengan tafsir yang mendalam.</p>
                 </div>
                 <div className="pb-5 space-y-3">
@@ -62,7 +62,7 @@ export default function TafsirPage() {
                         ) : (
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 my-2 sm:my-4">
                                 {filteredSurah?.map((surah: SurahItemType, index: number) => (
-                                    <Link href={`/tafsir/${surah?.number}`} key={index} className="flex items-center justify-between p-5 sm:p-6 bg-white rounded-lg border border-slate-200 hover:shadow-md transition-all duration-300 hover:border-teal-300">
+                                    <Link href={`/tafsir/${surah?.number}`} key={index} className="flex items-center justify-between p-5 sm:p-6 bg-white rounded-lg border border-teal-100 hover:shadow-md transition-all duration-300 hover:border-teal-300">
                                         <div className="flex items-center gap-4">
                                             <h1 className="arabic flex items-center gap-1 text-2xl">
                                                 <span className="ayah-number text-teal-400 text-4xl">

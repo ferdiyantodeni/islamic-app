@@ -88,7 +88,7 @@ export default function HijriyahCalendar() {
             <div className="border border-slate-100 rounded-2xl p-8 bg-slate-50">
                 <div className="text-center py-12">
                     <div className="inline-block">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500"></div>
                     </div>
                     <p className="mt-4 text-slate-600 font-medium">Memuat kalender...</p>
                 </div>
@@ -98,7 +98,7 @@ export default function HijriyahCalendar() {
     if (isError || !calendarData)
         return (
             <div className="border border-red-200 rounded-2xl p-8 bg-red-50">
-                <div className="text-center py-12">
+                <div className="text-center py-4">
                     <p className="text-red-600 font-semibold">Gagal memuat kalender</p>
                 </div>
             </div>

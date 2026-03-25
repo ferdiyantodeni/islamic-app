@@ -47,7 +47,7 @@ export default function Combobox({ label, value, options, disabled, onChange, ic
             <button
                 onClick={() => setOpen(v => !v)}
                 disabled={disabled}
-                className="flex items-center gap-2 px-3 py-2 bg-white border border-teal-200 rounded-lg text-xs sm:text-sm text-slate-700 hover:border-teal-400 hover:bg-teal-50 transition-all w-full sm:min-w-48 justify-between"
+                className="flex items-center gap-2 px-3 py-2 bg-white border border-teal-100 rounded-lg text-xs sm:text-sm text-slate-700 hover:border-teal-200 hover:bg-teal-50 transition-all w-full sm:min-w-48 justify-between"
             >
                 <span className="flex items-center gap-2 truncate">
                     {icon}
@@ -72,7 +72,7 @@ export default function Combobox({ label, value, options, disabled, onChange, ic
                                 value={search}
                                 onChange={e => setSearch(e.target.value)}
                                 placeholder="Cari ..."
-                                className="w-full px-3 py-1.5 text-xs sm:text-sm border border-slate-200 rounded-lg outline-none focus:border-teal-400"
+                                className="w-full px-3 py-1.5 text-xs sm:text-sm border border-slate-200 rounded-lg outline-none focus:border-teal-200"
                             />
                         </div>
                     )}

@@ -19,7 +19,7 @@ interface SelectLocationProps {
 
 export default function SelectLocation({ selectedProvince, selectedCity, provincesData, citiesData, isProvincesLoading, isCitiesLoading, handleProvinceChange, setSelectedCity }: SelectLocationProps) {
     return (
-        <div className="bg-white rounded-2xl shadow-xs border border-teal-200 p-4 sm:p-5 mb-6 sm:mb-8 transition-all hover:shadow-sm">
+        <div className="bg-white rounded-2xl shadow-xs border border-teal-100 p-4 sm:p-5 mb-6 sm:mb-8 transition-all hover:shadow-sm">
             <h2 className="font-semibold text-sm sm:text-base text-slate-900">Pilih Lokasi</h2>
             <p className="text-xs sm:text-sm text-slate-500 mb-3 sm:mb-4">Pilih provinsi dan kabupaten/kota untuk melihat jadwal.</p>
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">

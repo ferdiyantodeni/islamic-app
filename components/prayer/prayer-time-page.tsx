@@ -137,7 +137,7 @@ export default function PrayerTimePage() {
     return (
         <div className="pt-20 pb-5 px-7 lg:px-10 sm:py-6 flex-1 overflow-auto">
             <div className="mb-5 sm:mb-8">
-                <h1 className="text-lg sm:text-2xl font-bold text-slate-900">Jadwal Shalat</h1>
+                <h1 className="text-lg sm:text-2xl font-bold text-teal-400">Jadwal Shalat</h1>
                 <p className="text-xs sm:text-sm text-slate-500">Pantau waktu shalat Anda dengan akurat</p>
             </div>
 
@@ -156,19 +156,19 @@ export default function PrayerTimePage() {
                 <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-teal-600"><path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M3 10h18" /></svg>
                     <h3 className="text-base sm:text-xl font-bold text-slate-900">Jadwal Hari Ini</h3>
-                    <span className="bg-teal-200 py-1 px-3 rounded-full text-[0.6rem] sm:text-[0.7rem] font-semibold text-teal-600">{formattedToday}</span>
+                    <span className="bg-teal-100 py-1 px-3 rounded-full text-[0.6rem] sm:text-[0.7rem] font-semibold text-teal-600">{formattedToday}</span>
                 </div>
                 {!selectedCity ? (
-                    <div className="bg-linear-to-br from-teal-500 via-teal-600 to-teal-700 rounded-2xl p-5 sm:p-8 text-white shadow-lg border border-teal-400/20">
+                    <div className="bg-linear-to-br from-teal-400 to-teal-500 rounded-2xl p-5 sm:p-8 text-white shadow-lg border border-teal-400/20">
                         <p className="text-sm font-medium opacity-90">Pilih lokasi terlebih dahulu</p>
                     </div>
                 ) : isScheduleLoading ? (
-                    <div className="bg-linear-to-br from-teal-500 via-teal-600 to-teal-700 rounded-2xl p-5 sm:p-8 text-white shadow-lg border border-teal-400/20 flex items-center justify-center gap-3">
+                    <div className="bg-linear-to-br from-teal-400 to-teal-500 rounded-2xl p-5 sm:p-8 text-white shadow-lg border border-teal-400/20 flex items-center justify-center gap-3">
                         <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-teal-200"></div>
                         <p className="text-sm font-medium">Memuat data...</p>
                     </div>
                 ) : (
-                    <div className="flex items-center justify-between bg-linear-to-br from-teal-500 via-teal-600 to-teal-700 rounded-2xl p-6 sm:px-8 sm:py-6 text-white shadow-lg border border-teal-400/20">
+                    <div className="flex items-center justify-between bg-linear-to-br from-teal-400 to-teal-500 rounded-2xl p-6 sm:px-8 sm:py-6 text-white shadow-lg border border-teal-400/20">
                         <div>
                             <p className="text-xs sm:text-sm font-medium opacity-90 mb-2">Shalat Berikutnya</p>
                             <h2 className="text-lg sm:text-2xl font-bold">{nextPrayerIcon} {nextPrayer}</h2>
@@ -183,7 +183,7 @@ export default function PrayerTimePage() {
 
             <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-7 sm:mb-8">
                 {prayerTimes.map((prayer, index) => (
-                    <div key={index} className={`flex flex-col items-center justify-center rounded-xl p-5 sm:p-6 border border-teal-200 hover:shadow-md transition-all duration-300 hover:border-teal-300 group ${prayer.name === nextPrayer ? "bg-teal-50 border-2 border-teal-200 shadow-[0_0_3px_#34d399]" : "bg-white"}`}>
+                    <div key={index} className={`flex flex-col items-center justify-center rounded-xl p-5 sm:p-6 border border-teal-100 hover:shadow-md transition-all duration-300 hover:border-teal-300 group ${prayer.name === nextPrayer ? "bg-teal-50 border-2 border-teal-200 shadow-[0_0_3px_#34d399]" : "bg-white"}`}>
                         <div className="text-2xl sm:text-3xl mb-4 group-hover:scale-110 transition-transform">{prayer.icon}</div>
                         <h4 className="font-semibold text-slate-900 mb-1">{prayer.name}</h4>
                         <p className="text-xs text-slate-500 mb-2">Waktu shalat</p>
