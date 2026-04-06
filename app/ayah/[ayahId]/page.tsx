@@ -12,6 +12,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { use, useLayoutEffect, useRef, useState } from "react";
 
+
 interface AyahsData {
     number: number
     englishName: string
@@ -31,6 +32,7 @@ interface AyahData {
     numberOfAyahs: number;
 }
 
+export const runtime = 'edge'; // <--- Tambahkan baris ini
 export default function AyahPage({ params }: { params: Promise<{ ayahId: string }> }) {
     const { ayahId } = use(params);
     const router = useRouter();

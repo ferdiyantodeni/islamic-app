@@ -13,7 +13,7 @@ type DoaTypeProps = {
     grup: string;
     tag?: string[];
 }
-
+export const runtime = 'edge'; // <--- Tambahkan baris ini
 export default function DoaDetailPage({ params }: { params: Promise<{ doaId: string }> }) {
     const { doaId } = use(params);
     const { data: doaList, isLoading } = useFetchDua();

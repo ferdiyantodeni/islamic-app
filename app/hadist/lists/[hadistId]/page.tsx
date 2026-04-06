@@ -12,7 +12,7 @@ type HadistListType = {
     arab: string
     id: string
 }
-
+export const runtime = 'edge'; // <--- Tambahkan baris ini
 export default function HadistListPage({ params }: { params: Promise<{ hadistId: string }> }) {
     const { hadistId } = use(params);
     const loadMoreRef = useRef<HTMLDivElement>(null);

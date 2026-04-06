@@ -6,6 +6,7 @@ import { toArabicNumber } from "@/utils/arabic-number";
 import Link from "next/link";
 import { use, useState } from "react";
 
+export const runtime = 'edge'; // <--- Tambahkan baris ini
 export default function TafsirDetailPage({ params }: { params: Promise<{ tafsirId: string }> }) {
     const { tafsirId } = use(params);
     const { data: tafsirDetail, isLoading, error } = useFetchTafsir(tafsirId);
