@@ -5,6 +5,8 @@ import Link from "next/link";
 import { toArabicNumber } from "@/utils/arabic-number";
 import { useState, useMemo } from "react";
 import useFetchSurah from "@/hooks/useFetchSurah";
+import axiosInstance from "@/lib/axios";
+
 
 type SurahItemType = {
     number: number
