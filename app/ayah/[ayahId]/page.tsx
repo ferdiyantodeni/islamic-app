@@ -10,7 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useWindowVirtualizer } from "@tanstack/react-virtual";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { use, useLayoutEffect, useRef, useState } from "react";
+import { use, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 
 interface AyahsData {
