@@ -5,9 +5,9 @@ export default function useFetchSurah() {
     return useQuery({
         queryKey: ["surah-list"],
         queryFn: async () => {
-            const response = await axiosInstance.get("surah");
-            return response?.data?.data
+            const response = await axiosInstance.get("/surah");
+            return response?.data?.data;
         },
-        staleTime: Infinity
+        staleTime: Infinity,
     });
 }
