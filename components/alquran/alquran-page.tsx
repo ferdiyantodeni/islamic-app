@@ -3,9 +3,7 @@
 import Search from "../ui/search";
 import Link from "next/link";
 import { toArabicNumber } from "@/utils/arabic-number";
-import { useState, useMemo } from "react";
-import useFetchSurah from "@/hooks/useFetchSurah";
-import axiosInstance from "@/lib/axios";
+import { useState, useMemo, useEffect } from "react";
 
 
 type SurahItemType = {
@@ -19,7 +17,31 @@ type SurahItemType = {
 
 export default function AlquranPage() {
     const [searchTerm, setSearchTerm] = useState<string>("");
-    const { data: surahList, isLoading } = useFetchSurah();
+    const [surahList, setSurahList] = useState<SurahItemType[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+
+    useEffect(() => {
+        const fetchSurah = async () => {
+            try {
+                const response = await fetch('https://api.alquran.cloud/v1/surah', {
+                    headers: {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                        'Accept': 'application/json',
+                    },
+                });
+                const data = await response.json();
+                if (data.code === 200) {
+                    setSurahList(data.data);
+                }
+            } catch (error) {
+                console.error('Error fetching surah:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchSurah();
+    }, []);
 
     const filteredSurah = useMemo(() => {
         if (!surahList) return [];
