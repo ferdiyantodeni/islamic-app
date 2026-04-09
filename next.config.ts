@@ -1,7 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* Hapus baris output: 'export' jika sebelumnya ada */
+  /* Proxy configuration for API routes */
+  rewrites: async () => {
+    return {
+      beforeFiles: [
+        /* Route API requests through internal routes */
+      ],
+    };
+  },
   typescript: {
     ignoreBuildErrors: true, // Opsional: agar build tidak berhenti jika ada error tipe data kecil
   },

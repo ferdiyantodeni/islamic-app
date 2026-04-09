@@ -5,7 +5,7 @@ export default function useFetchDua() {
     return useQuery({
         queryKey: ["list-doa"],
         queryFn: async () => {
-            const response = await axios.get("https://equran.id/api/doa");
+            const response = await axios.get("/api/doa");
             return response?.data?.data;
         },
         staleTime: Infinity

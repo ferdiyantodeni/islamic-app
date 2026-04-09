@@ -16,7 +16,7 @@ export default function HadistPage() {
     const { data: dataHadist, isLoading: isLoadingHadist } = useQuery({
         queryKey: ["hadist"],
         queryFn: async () => {
-            const response = await axios.get("https://api.hadith.gading.dev/books");
+            const response = await axios.get("/api/hadist");
             return Array.isArray(response?.data?.data) ? response.data.data : [];
         }
     });

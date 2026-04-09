@@ -113,9 +113,11 @@ export const useFetchIslamicCalendar = (
         queryKey: ["islamic-calendar", month, year, city],
         queryFn: async () => {
             const response = await axios.get<HijriCalendarResponse>(
-                `https://api.aladhan.com/v1/calendarByCity/${year}/${month}`,
+                `/api/calendar`,
                 {
                     params: {
+                        year,
+                        month,
                         city,
                         country,
                         method,
@@ -157,7 +159,7 @@ export const useFetchHijriMonthInfo = (month: number, year: number) => {
             const date = `${day}-${mm}-${year}`;
 
             const response = await axios.get(
-                `https://api.aladhan.com/v1/gToHijri`,
+                `/api/hijri`,
                 {
                     params: { date },
                 }

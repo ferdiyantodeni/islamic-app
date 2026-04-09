@@ -23,7 +23,7 @@ export default function HadistListPage({ params }: { params: Promise<{ hadistId:
         queryFn: async ({ pageParam = 1 }) => {
             const start = (pageParam - 1) * PAGE_SIZE + 1;
             const end = pageParam * PAGE_SIZE;
-            const response = await axios.get(`https://api.hadith.gading.dev/books/${hadistId}?range=${start}-${end}`);
+            const response = await axios.get(`/api/hadist/${hadistId}?range=${start}-${end}`);
             return response?.data?.data;
         },
         initialPageParam: 1,

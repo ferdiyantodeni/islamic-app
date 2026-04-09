@@ -19,7 +19,7 @@ export default function useFetchTafsir(tafsirId: string) {
     return useQuery({
         queryKey: ["tafsir", tafsirId],
         queryFn: async () => {
-            const response = await axiosInstance.get(`https://equran.id/api/v2/tafsir/${tafsirId}`);
+            const response = await axiosInstance.get(`/tafsir/${tafsirId}`);
             return response?.data?.data as TafsirData;
         },
         enabled: !!tafsirId,

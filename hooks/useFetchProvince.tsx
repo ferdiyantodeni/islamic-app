@@ -5,7 +5,7 @@ export default function useFetchProvince() {
     return useQuery({
         queryKey: ["get-provinces"],
         queryFn: async () => {
-            const response = await axios.get("https://equran.id/api/v2/shalat/provinsi");
+            const response = await axios.get("/api/provinces");
             return response?.data?.data?.map((prov: string, index: number) => ({
                 id: index,
                 value: prov,

@@ -31,7 +31,7 @@ export default function ImsakiyahPage() {
     const { data: scheduleData, isPending: isScheduleLoading } = useQuery({
         queryKey: ["get-schedule", selectedProvince, selectedCity],
         queryFn: async () => {
-            const response = await axios.post("https://equran.id/api/v2/imsakiyah", {
+            const response = await axios.post("/api/imsakiyah", {
                 provinsi: selectedProvince,
                 kabkota: selectedCity,
             });

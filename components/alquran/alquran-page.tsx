@@ -23,12 +23,7 @@ export default function AlquranPage() {
     useEffect(() => {
         const fetchSurah = async () => {
             try {
-                const response = await fetch('https://api.alquran.cloud/v1/surah', {
-                    headers: {
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                        'Accept': 'application/json',
-                    },
-                });
+                const response = await fetch('/api/surah');
                 const data = await response.json();
                 if (data.code === 200) {
                     setSurahList(data.data);

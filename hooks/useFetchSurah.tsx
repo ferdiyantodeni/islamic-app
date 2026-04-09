@@ -5,7 +5,7 @@ export default function useFetchSurah() {
     return useQuery({
         queryKey: ["surah-list"],
         queryFn: async () => {
-            const response = await axios.get('https://api.alquran.cloud/v1/surah');
+            const response = await axios.get('/api/surah');
             return response?.data?.data;
         },
         staleTime: Infinity,

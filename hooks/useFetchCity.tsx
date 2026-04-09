@@ -5,7 +5,7 @@ export default function useFetchCity({ selectedProvince }: { selectedProvince: s
     return useQuery({
         queryKey: ["get-cities", selectedProvince],
         queryFn: async () => {
-            const response = await axios.post("https://equran.id/api/v2/shalat/kabkota", {
+            const response = await axios.post("/api/cities", {
                 provinsi: selectedProvince,
             });
             return response?.data?.data?.map((city: string, index: number) => ({

@@ -50,7 +50,7 @@ export default function PrayerTimePage() {
     const { data: scheduleData, isPending: isScheduleLoading } = useQuery({
         queryKey: ["get-schedule", selectedProvince, selectedCity],
         queryFn: async () => {
-            const response = await axios.post("https://equran.id/api/v2/shalat", {
+            const response = await axios.post("/api/schedule", {
                 provinsi: selectedProvince,
                 kabkota: selectedCity,
             });

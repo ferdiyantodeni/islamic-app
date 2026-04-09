@@ -46,12 +46,7 @@ export default function AyahPage({ params }: { params: Promise<{ ayahId: string 
     useEffect(() => {
         const fetchAllSurahs = async () => {
             try {
-                const response = await fetch('https://api.alquran.cloud/v1/surah', {
-                    headers: {
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                        'Accept': 'application/json',
-                    },
-                });
+                const response = await fetch('/api/surah');
                 const data = await response.json();
                 if (data.code === 200) {
                     setAllSurahs(data.data);
@@ -69,14 +64,9 @@ export default function AyahPage({ params }: { params: Promise<{ ayahId: string 
     const { data: surahDetail, isLoading } = useQuery({
         queryKey: ["surah", ayahId, selectedTranslation, selectedQori],
         queryFn: async () => {
+            const editions = `quran-uthmani,en.transliteration,${selectedTranslation},${selectedQori}`;
             const response = await fetch(
-                `https://api.alquran.cloud/v1/surah/${ayahId}/editions/quran-uthmani,en.transliteration,${selectedTranslation},${selectedQori}`,
-                {
-                    headers: {
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                        'Accept': 'application/json',
-                    },
-                }
+                `/api/surah/${ayahId}?editions=${encodeURIComponent(editions)}`
             );
             const data = await response.json();
             return data?.data;
